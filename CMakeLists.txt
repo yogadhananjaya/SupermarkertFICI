@@ -3,4 +3,6 @@ project(SPMFICI C)
 
 set(CMAKE_C_STANDARD 23)
 
-add_executable(SPMFICI main.c)
+add_executable(SPMFICI
+        #main.c
+        "Coba header.c" )

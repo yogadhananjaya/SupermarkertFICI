@@ -4,15 +4,10 @@
 #include <string.h>
 #include <conio.h>
 
-int headerX = 0;  // Posisi X header global
-int consoleWidth = 0; // Lebar konsol akan diisi di printHeader
+int headerX = 0;
+int consoleWidth = 0;
 
-// --- KONSTANTA UNTUK PEMUSATAN ---
 #define BOX_WIDTH 60
-
-// ======================================================================
-//                  ANIMASI STARTUP + FULLSCREEN (Tidak Berubah)
-// ======================================================================
 
 void goFullscreen() {
     keybd_event(VK_MENU, 0x38, 0, 0);
@@ -31,7 +26,6 @@ void maximizeConsole() {
 void setConsoleTitleBar() {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFOEX csbi = { sizeof(CONSOLE_SCREEN_BUFFER_INFOEX) };
-
     GetConsoleScreenBufferInfoEx(hOut, &csbi);
     csbi.ColorTable[0] = RGB(0, 0, 0);
     csbi.ColorTable[15] = RGB(255, 255, 255);
@@ -79,17 +73,12 @@ void startupSequence() {
     system("cls");
 }
 
-// ======================================================================
-//                        HELPER FUNCTIONS UI
-// ======================================================================
-
 void gotoxy(int x, int y) {
     COORD coord = {x, y};
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
 void drawBox(int x, int y, int width, int height) {
-    // Pastikan area di dalam kotak di-clear
     for(int i = 1; i <= height; i++) {
         gotoxy(x + 1, y + i);
         for(int j = 0; j < width; j++) printf(" ");
@@ -113,17 +102,13 @@ void printHeader() {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 
-    // Dapatkan lebar konsol yang sebenarnya
     consoleWidth = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 
-    // Lebar ASCII Art (tetap 87)
     int asciiWidth = 87;
 
-    // Hitung posisi X untuk menengahkan ASCII Art
     headerX = (consoleWidth - asciiWidth) / 2;
     if(headerX < 0) headerX = 0;
 
-    // Cetak ASCII Art
     gotoxy(headerX, 1);  printf("   _____ _    _ _____  ______ _____  __  __           _____  _  ________ _______ ");
     gotoxy(headerX, 2);  printf("  / ____| |  | |  __ \\|  ____|  __ \\|  \\/  |    /\\    |  __ \\| |/ /  ____|__    __|");
     gotoxy(headerX, 3);  printf(" | (___ | |  | | |__) | |__  | |__) | \\  / |   /  \\   | |__) | ' /| |__     | |   ");
@@ -131,17 +116,11 @@ void printHeader() {
     gotoxy(headerX, 5);  printf("  ____) | |__| | |    | |____| | \\ \\| |  | | / ____ \\ | | \\ \\| . \\| |____   | |   ");
     gotoxy(headerX, 6);  printf(" |_____/ \\____/|_|    |______|_|  \\_\\_|  |_|/_/    \\_\\|_|  \\_\\_|\\_\\______|  |_|   ");
 
-    // Garis Pemisah Penuh
-    // Kita pindahkan garis pemisah sedikit ke bawah untuk memberi jarak
     gotoxy(0, 8);
     for(int i=0; i < consoleWidth; i++) {
         printf("-");
     }
 }
-
-// ======================================================================
-//                   FEATURE MOCKUP (Sudah Diperbaiki Pemusatan)
-// ======================================================================
 
 void featureUnderConstruction(char *featureName) {
     system("cls");
@@ -156,10 +135,6 @@ void featureUnderConstruction(char *featureName) {
     gotoxy(boxX + 5, 15); printf("Tekan sembarang tombol untuk kembali.");
     getch();
 }
-
-// ======================================================================
-//                          MENU MEMBER (Sudah Diperbaiki Pemusatan)
-// ======================================================================
 
 void menuMember() {
     int choice;
@@ -195,10 +170,6 @@ void menuMember() {
     }
 }
 
-// ======================================================================
-//                          MENU KASIR (Sudah Diperbaiki Pemusatan)
-// ======================================================================
-
 void menuKasir() {
     int choice;
     int boxW = BOX_WIDTH;
@@ -230,10 +201,6 @@ void menuKasir() {
         }
     }
 }
-
-// ======================================================================
-//                          MENU ADMIN (Sudah Diperbaiki Pemusatan)
-// ======================================================================
 
 void menuAdmin() {
     int choice;
@@ -277,10 +244,6 @@ void menuAdmin() {
     }
 }
 
-// ======================================================================
-//                             LOGIN (Sudah Diperbaiki Pemusatan)
-// ======================================================================
-
 void loginScreen(int role) {
     char username[50], password[50], ch;
     char roleName[20];
@@ -308,7 +271,7 @@ void loginScreen(int role) {
         gotoxy(boxX + 5, 16); printf("Password : ");
 
         gotoxy(boxX + 17, 13);
-        if(scanf("%s", username) != 1) { /* handle error */ }
+        scanf("%s", username);
 
         gotoxy(boxX + 17, 16);
         i = 0;
@@ -342,10 +305,6 @@ void loginScreen(int role) {
     }
 }
 
-// ======================================================================
-//                               MAIN (Sudah Diperbaiki Penumpukan)
-// ======================================================================
-
 int main() {
     int choice;
 
@@ -356,29 +315,24 @@ int main() {
 
     while(1) {
         system("cls");
-        printHeader(); // consoleWidth akan dihitung di sini
+        printHeader();
 
-        // boxX harus dihitung ulang setelah printHeader
         int boxX = (consoleWidth - boxW) / 2;
 
         char title[] = "PILIH LOGIN SEBAGAI";
         int titleX = boxX + (boxW / 2) - strlen(title) / 2;
         gotoxy(titleX, 9); printf("%s", title);
 
-        // Kotak Menu Utama
         drawBox(boxX, 11, boxW, 7);
 
-        // Opsi di dalam kotak - Kunci: Pastikan setiap opsi berada di baris Y yang berbeda
         gotoxy(boxX + 8, 13); printf("[1] Kasir");
         gotoxy(boxX + 8, 14); printf("[2] Member");
         gotoxy(boxX + 8, 15); printf("[3] Admin");
         gotoxy(boxX + 8, 17); printf("[0] Keluar Program");
 
-        // Input Pilihan - Pastikan di baris Y yang berbeda
         gotoxy(boxX + 8, 19); printf("Pilihan >> ");
 
         if(scanf("%d", &choice) != 1) {
-            // Bersihkan buffer input jika terjadi error
             while(getchar() != '\n');
             continue;
         }
@@ -390,9 +344,6 @@ int main() {
             gotoxy(boxX, 22);
             printf("Terima kasih telah menggunakan aplikasi ini.");
             break;
-        }
-        else {
-            // Pilihan invalid
         }
     }
 

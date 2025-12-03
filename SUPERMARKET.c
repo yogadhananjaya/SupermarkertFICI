@@ -11,7 +11,7 @@ int consoleWidth = 150;
 // =====================================================================================
 // goFullscreen()
 // Memicu kombinasi tombol ALT + ENTER lewat keybd_event untuk memaksa console masuk
-// ke fullscreen mode. Windows Console kadang nakal, maka diberi jeda kecil.
+// ke fullscreen mode.
 // =====================================================================================
 void goFullscreen() {
     keybd_event(VK_MENU, 0x38, 0, 0);
@@ -71,7 +71,7 @@ void loadingAnimation() {
 
 // =====================================================================================
 // pulseFlash()
-// Efek kilatan layar (blink putih-hitam) untuk memberi kesan startup dramatis.
+// Efek kilatan layar (blink putih-hitam) ngide aja sih hehe.
 // =====================================================================================
 void pulseFlash() {
     for (int i = 0; i < 3; i++) {
@@ -282,7 +282,6 @@ void menuAdmin(){
 
 // =====================================================================================
 // menuSuperAdmin()
-// Menu SUPER ADMIN berisi fitur pengaturan level tertinggi.
 // =====================================================================================
 void menuSuperAdmin() {
     int choice;

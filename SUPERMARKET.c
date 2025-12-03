@@ -8,11 +8,23 @@ int headerX = 0;
 int consoleWidth = 150;
 #define BOX_WIDTH 60
 
+
+void setPinkTheme() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFOEX csbi;
+    csbi.cbSize = sizeof(CONSOLE_SCREEN_BUFFER_INFOEX);
+
+    GetConsoleScreenBufferInfoEx(hOut, &csbi);
+    csbi.ColorTable[13] = RGB(200, 50, 150);
+    csbi.ColorTable[15] = RGB(255, 255, 255);
+
+    SetConsoleScreenBufferInfoEx(hOut, &csbi);
+}
+
 // =====================================================================================
-// goFullscreen()
-// Memicu kombinasi tombol ALT + ENTER lewat keybd_event untuk memaksa console masuk
-// ke fullscreen mode.
+// Fungsi Utilitas Layar
 // =====================================================================================
+
 void goFullscreen() {
     keybd_event(VK_MENU, 0x38, 0, 0);
     keybd_event(VK_RETURN, 0x1C, 0, 0);
@@ -21,33 +33,12 @@ void goFullscreen() {
     Sleep(150);
 }
 
-// =====================================================================================
-// maximizeConsole()
-// Memaksimalkan jendela console ke ukuran layar penuh versi windowed (bukan fullscreen).
-// =====================================================================================
 void maximizeConsole() {
     HWND consoleWindow = GetConsoleWindow();
     ShowWindow(consoleWindow, SW_MAXIMIZE);
     Sleep(150);
 }
 
-// =====================================================================================
-// setConsoleTitleBar()
-// Mengubah warna kolom 0 dan 15 di tabel warna console (hitam & putih).
-// =====================================================================================
-void setConsoleTitleBar() {
-    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFOEX csbi = { sizeof(CONSOLE_SCREEN_BUFFER_INFOEX) };
-    GetConsoleScreenBufferInfoEx(hOut, &csbi);
-    csbi.ColorTable[0] = RGB(0, 0, 0);
-    csbi.ColorTable[15] = RGB(255, 255, 255);
-    SetConsoleScreenBufferInfoEx(hOut, &csbi);
-}
-
-// =====================================================================================
-// loadingAnimation()
-// Animasi loading sederhana menggunakan array string yang bergerak dari kiri ke kanan.
-// =====================================================================================
 void loadingAnimation() {
     const char *frames[] = {
         "[=         ]", "[==        ]", "[===       ]",
@@ -69,27 +60,21 @@ void loadingAnimation() {
     Sleep(150);
 }
 
-// =====================================================================================
-// pulseFlash()
-// Efek kilatan layar (blink putih-hitam) ngide aja sih hehe.
-// =====================================================================================
 void pulseFlash() {
     for (int i = 0; i < 3; i++) {
-        system("color F0");
+        system("color DF");
         Sleep(80);
-        system("color 0F");
+        system("color FD");
         Sleep(80);
     }
-    system("color F0");
+    system("color DF");
 }
 
-// =====================================================================================
-// startupSequence()
-// Urutan startup lengkap: maximize → set warna → loading → flash → fullscreen.
-// =====================================================================================
 void startupSequence() {
     maximizeConsole();
-    setConsoleTitleBar();
+    setPinkTheme();
+    system("color DF");
+
     loadingAnimation();
     pulseFlash();
     goFullscreen();
@@ -97,20 +82,11 @@ void startupSequence() {
     system("cls");
 }
 
-// =====================================================================================
-// gotoxy(x,y)
-// Memindahkan posisi cursor console ke koordinat tertentu.
-// =====================================================================================
 void gotoxy(int x, int y) {
     COORD coord = {x, y};
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-// =====================================================================================
-// drawBox(x,y,width,height)
-// Menggambar kotak menggunakan karakter ASCII ┌─┐ │ │ └─┘
-// Termasuk area kosong di dalam kotak.
-// =====================================================================================
 void drawBox(int x, int y, int width, int height) {
     for(int i = 1; i <= height; i++) {
         gotoxy(x + 1, y + i);
@@ -131,20 +107,12 @@ void drawBox(int x, int y, int width, int height) {
     printf("%c", 217);
 }
 
-// =====================================================================================
-// featureUnderConstruction()
-// Template untuk fitur yang belum dibuat. Menampilkan pesan dan jeda.
-// =====================================================================================
 void featureUnderConstruction(const char *featureName) {
     system("cls");
     printf("\n Fitur '%s' sedang dikembangkan...\n", featureName);
     Sleep(1300);
 }
 
-// =====================================================================================
-// printHeader()
-// Mengambil lebar console, menghitung posisi tengah, dan menampilkan ASCII ART.
-// =====================================================================================
 void printHeader() {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
@@ -173,9 +141,9 @@ void printHeader() {
 }
 
 // =====================================================================================
-// menuMember()
-// Menu khusus role MEMBER berisi daftar menu placeholder.
+// Menu - Menu
 // =====================================================================================
+
 void menuMember() {
     int choice;
     int boxX = (consoleWidth - BOX_WIDTH) / 2;
@@ -206,10 +174,6 @@ void menuMember() {
     }
 }
 
-// =====================================================================================
-// menuKasir()
-// Menu role KASIR berisi fitur-fitur transaksi penjualan.
-// =====================================================================================
 void menuKasir() {
     int choice;
     int boxX = (consoleWidth - BOX_WIDTH) / 2;
@@ -238,10 +202,6 @@ void menuKasir() {
     }
 }
 
-// =====================================================================================
-// menuAdmin()
-// Menu khusus ADMIN dengan lebih banyak opsi manajemen data.
-// =====================================================================================
 void menuAdmin(){
     int choice;
     int boxX = (consoleWidth - BOX_WIDTH) / 2;
@@ -280,9 +240,6 @@ void menuAdmin(){
     }
 }
 
-// =====================================================================================
-// menuSuperAdmin()
-// =====================================================================================
 void menuSuperAdmin() {
     int choice;
     int boxX = (consoleWidth - BOX_WIDTH) / 2;
@@ -313,10 +270,6 @@ void menuSuperAdmin() {
     }
 }
 
-// =====================================================================================
-// loginScreenSuperAdmin()
-// Login dengan fitur show/hide password menggunakan tombol F2.
-// =====================================================================================
 void loginScreenSuperAdmin() {
     char username[50], password[50];
     char ch;
@@ -329,35 +282,23 @@ void loginScreenSuperAdmin() {
         printHeader();
 
         gotoxy(boxX+18,9); printf("LOGIN SUPER ADMIN");
-
         drawBox(boxX,11,BOX_WIDTH,10);
 
         gotoxy(boxX+5,13); printf("Username : ");
         gotoxy(boxX+5,15); printf("Password : ");
         gotoxy(boxX+5,17); printf("Tekan F2 untuk Show/Hide");
 
-        gotoxy(boxX+17,13);
-        scanf("%s",username);
+        gotoxy(boxX+17,13); scanf("%s",username);
 
         gotoxy(boxX+17,15);
         i = 0;
-
         while(1){
             ch = getch();
-
-            if(ch == 13){
-                password[i] = '\0';
-                break;
-            }
-
+            if(ch == 13){ password[i] = '\0'; break; }
             if(ch == 8){
-                if(i > 0){
-                    i--;
-                    printf("\b \b");
-                }
+                if(i > 0){ i--; printf("\b \b"); }
                 continue;
             }
-
             if(ch == 0 || ch == 224){
                 ch = getch();
                 if(ch == 60){
@@ -367,28 +308,22 @@ void loginScreenSuperAdmin() {
                 }
                 continue;
             }
-
             password[i] = ch;
             i++;
             printf(show ? "%c" : "*", ch);
         }
 
         if(strcmp(username,"superadmin")==0 && strcmp(password,"superadmin")==0){
-            gotoxy(boxX+5,20); printf(">> Login Berhasil! Masuk ke menu Super Admin...");
+            gotoxy(boxX+5,20); printf(">> Login Berhasil!...");
             Sleep(1000);
             menuSuperAdmin();
             return;
         }
-
         gotoxy(boxX+5,20); printf("Login gagal! Coba lagi...");
         Sleep(1000);
     }
 }
 
-// =====================================================================================
-// mainMenu()
-// Menu utama yang menghubungkan semua role yang tersedia.
-// =====================================================================================
 void mainMenu(){
     int choice;
     int boxX = (consoleWidth - BOX_WIDTH) / 2;
@@ -419,10 +354,6 @@ void mainMenu(){
     }
 }
 
-// =====================================================================================
-// main()
-// Entry point: set ukuran console, jalankan startup, lalu tampilkan menu utama.
-// =====================================================================================
 int main() {
     system("mode con: cols=150 lines=40");
     startupSequence();

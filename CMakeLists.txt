@@ -4,5 +4,6 @@ project(SPMFICI C)
 set(CMAKE_C_STANDARD 23)
 
 add_executable(SPMFICI
-        SUPERMARKET.c
+        #SUPERMARKET.c
+        backup.c
 )
